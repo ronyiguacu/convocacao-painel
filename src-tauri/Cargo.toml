@@ -1,6 +1,6 @@
 [package]
 name = "convocacao-painel"
-version = "1.0.1"
+version = "1.0.2"
 description = "Painel de convocacao"
 authors = ["rony"]
 edition = "2021"

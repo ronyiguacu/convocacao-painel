@@ -10,7 +10,15 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - plataforma: windows-latest
+            args: ""
+          - plataforma: macos-latest
+            args: "--target universal-apple-darwin"
+    runs-on: ${{ matrix.plataforma }}
     steps:
       - name: Baixar o codigo
         uses: actions/checkout@v4
@@ -22,6 +30,8 @@ jobs:
 
       - name: Instalar Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.plataforma == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Instalar dependencias do projeto
         run: npm install
@@ -38,6 +48,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Convocacao Painel ${{ github.ref_name }}"
-          releaseBody: "Atualizacao automatica do painel de convocacao."
+          releaseBody: "Painel de convocacao - Windows e Mac. Atualizacao automatica."
           releaseDraft: false
           prerelease: false
+          args: ${{ matrix.args }}
